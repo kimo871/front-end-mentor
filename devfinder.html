@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevFinder.io</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+ </head>
+
+ <body>
+<div class="flex-container">
+<div class="container">
+<div style="display:flex; justify-content:space-between;"><h3 >Devfinder.io</h3>
+<p >light</p></div>
+<div class="form"><i class="fa-solid fa-magnifying-glass"></i>&nbsp; 
+<input type="text" placeholder="Enter Username...."/>
+<button class="btn">Search</button></div>
+<div class="card">
+<div class="layer_er">
+<h2 class="err">Nothing To Do !</h2>
+</div>
+<div class="title">
+ <div style="display:flex; align-items:center; overflow-wrap:wrap;" class="title-img col-4 col-sm-6">
+ 	<img class="skeleton" src=""/ ALT=" ">
+ </div>
+ <div class="title-text col-8 col-sm-12">
+<div style="display:flex; justify-content:space-between; align-items:center ">
+	<div class="skeleton skeleton-text info"><h3 class="txt"></h3></div>
+	<div class="skeleton skeleton-text info"><p class="date"><small class='txt '></small></p></div>
+</div>
+<div class="skeleton skeleton-text info"><p><small class="txt"></small></p></div>
+<div class="skeleton skeleton-text info"><p class="txt"></p></div>
+</div>
+</div>
+<div class="body">
+<div class="col-3"></div>
+<div class="body-text col-8 col-sm-12">
+<div class="gti-badge skeleton skeleton-text info ">
+<div class="col-3  ">
+	<h4 class="txt"></h4>
+	<p class='txt'></p>
+</div>
+<div class="col-3 ">
+	<h4 class="txt"></h4>
+	<p class="txt"></p>
+</div>
+<div class="col-3 ">
+	<h4 class="txt"></h4>
+	<p class="txt"></p>
+</div>
+</div>
+<div class="icons col-sm-12">
+<div class="skeleton skeleton-text info col-8"><i class="fa-solid "></i>&nbsp;<span class="txt"></span></div>
+<div class="skeleton skeleton-text info col-4"><i class="fa-solid "></i>&nbsp;<span class="txt"></span></div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+</div>
+<script>
+let btn = document.querySelector(".btn");
+let input = document.querySelector("input");
+let img = document.querySelector("img");
+let infor = document.querySelectorAll(".info");
+let txt = document.querySelectorAll(".txt");
+let layer = document.querySelector(".layer_er");
+let arr_val;
+let api = async (user)=>{
+	await fetch(`https://api.github.com/users/${user}`).then((res)=> res.json()).then((info)=> {console.log(info);
+		 arr_val=[['Repos','Following','Followers'],[info.public_repos,info.following,info.followers]];
+		console.log(arr_val);
+		img.classList.remove("skeleton");
+		infor.forEach((item)=> item.classList.remove("skeleton","skeleton-text"));
+		img.src=info["avatar_url"];
+		if(info.login == null){
+			layer.children[0].textContent="No Such User";
+			layer.style="min-height:100%; opacity:1"
+		}
+		infor[0].firstChild.textContent = info.login;
+		infor[1].firstChild.firstChild.textContent = 'Joined at : ' + info.created_at;
+		if(info.name ==null){info.name="Name Not Found .."}
+		infor[2].firstChild.firstChild.textContent = info.name;
+		if(info.bio == null){info.bio="Bio Not Found ..."}
+		infor[3].firstChild.textContent=info.bio;
+		infor[4].classList.remove("skeleton","skeleton-text");
+		let counter=0;
+		for(let i=0; i < infor[4].children.length;i++){
+			let u = infor[4].children[0].children.length;
+           for(let y=0; y < u;y++){
+           	infor[4].children[i].children[y].innerHTML = arr_val[y][i];
+           }
+		}
+		infor[5].children[0].classList.add("fa","fa-link");
+		infor[5].children[1].innerHTML = `<a href=${info.html_url} target="_Blank">${info.html_url}</a>`;
+		infor[6].children[0].classList.add("fa","fa-location-dot");
+		if(info.location == null){info.location="No Data .."}
+		infor[6].children[1].innerHTML = info.location;
+
+	 })
+		
+}
+btn.addEventListener("click",()=>{
+if(input.value != 0){
+layer.style="min-height:0%; opacity:0%";
+infor.forEach((item,index)=>item.classList.add("skeleton","skeleton-text"));
+img.src='';
+img.classList.add("skeleton");
+document.querySelectorAll(".icons  i").forEach((item)=>item.classList.remove("fa-solid","fa-link","fa-location-dot"));
+	let user = input.value;
+	txt.forEach((item,index)=>item.innerHTML="");
+
+	setTimeout(api(user),10000);
+	
+	input.value="";
+}
+})
+
+
+</script>
+ </body>
